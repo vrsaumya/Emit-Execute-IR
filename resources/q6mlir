@@ -1,0 +1,21 @@
+module {
+  func.func @main() {
+    %c1_i64 = arith.constant 1 : i64
+    %c5_i64 = arith.constant 5 : i64
+    %c1_i64_0 = arith.constant 1 : i64
+    %c5_i64_1 = arith.constant 5 : i64
+    %c1_i64_2 = arith.constant 1 : i64
+    %c1_i64_3 = arith.constant 1 : i64
+    %0:2 = scf.for %arg0 = %c1_i64_2 to %c5_i64_1 step %c1_i64_3 iter_args(%arg1 = %c1_i64_0, %arg2 = %c5_i64) -> (i64, i64)  : i64 {
+      %2 = arith.muli %arg1, %arg2 : i64
+      %3 = arith.subi %arg2, %c1_i64 : i64
+      scf.yield %2, %3 : i64, i64
+    }
+    %alloc = memref.alloc() : memref<10x3xf64>
+    %1 = call @loadDataForQ6(%alloc) : (memref<10x3xf64>) -> f64
+    call @printMemRef(%alloc) : (memref<10x3xf64>) -> ()
+    return
+  }
+  func.func private @loadDataForQ6(memref<10x3xf64>) -> f64
+  func.func private @printMemRef(memref<10x3xf64>)
+}

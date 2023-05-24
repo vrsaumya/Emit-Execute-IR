@@ -1,0 +1,3 @@
+EnumerableProject(l_extendedprice=[$5], l_quantity=[$4], l_discount=[$6]), id = 23
+  EnumerableFilter(condition=[AND(>=($6, 0.05:DECIMAL(2, 2)), <=($6, 0.10:DECIMAL(2, 2)), <=($4, 20))]), id = 21
+    EnumerableTableScan(table=[[select.sql, lineitem]]), id = 12

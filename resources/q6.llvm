@@ -1,0 +1,72 @@
+module attributes {llvm.data_layout = ""} {
+  llvm.func @printNewline()
+  llvm.func @printF64(f64)
+  llvm.func @malloc(i64) -> !llvm.ptr
+  llvm.func @main() {
+    %0 = llvm.mlir.constant(99 : index) : i64
+    %1 = llvm.mlir.constant(5.000000e-02 : f64) : f64
+    %2 = llvm.mlir.constant(1.000000e-01 : f64) : f64
+    %3 = llvm.mlir.constant(2.000000e+01 : f64) : f64
+    %4 = llvm.mlir.constant(2 : index) : i64
+    %5 = llvm.mlir.constant(0 : index) : i64
+    %6 = llvm.mlir.constant(100 : index) : i64
+    %7 = llvm.mlir.constant(3 : index) : i64
+    %8 = llvm.mlir.constant(1 : index) : i64
+    %9 = llvm.mlir.null : !llvm.ptr
+    %10 = llvm.getelementptr %9[300] : (!llvm.ptr) -> !llvm.ptr, f64
+    %11 = llvm.ptrtoint %10 : !llvm.ptr to i64
+    %12 = llvm.call @malloc(%11) : (i64) -> !llvm.ptr
+    %13 = llvm.mlir.null : !llvm.ptr
+    %14 = llvm.getelementptr %13[100] : (!llvm.ptr) -> !llvm.ptr, i64
+    %15 = llvm.ptrtoint %14 : !llvm.ptr to i64
+    %16 = llvm.call @malloc(%15) : (i64) -> !llvm.ptr
+    %17 = llvm.call @loadData_q6(%12, %12, %5, %6, %7, %7, %8, %16, %16, %5, %6, %8) : (!llvm.ptr, !llvm.ptr, i64, i64, i64, i64, i64, !llvm.ptr, !llvm.ptr, i64, i64, i64) -> i64
+    llvm.br ^bb1(%5 : i64)
+  ^bb1(%18: i64):  // 2 preds: ^bb0, ^bb9
+    %19 = llvm.icmp "slt" %18, %0 : i64
+    llvm.cond_br %19, ^bb2, ^bb10
+  ^bb2:  // pred: ^bb1
+    %20 = llvm.mul %18, %7  : i64
+    %21 = llvm.add %20, %5  : i64
+    %22 = llvm.getelementptr %12[%21] : (!llvm.ptr, i64) -> !llvm.ptr, f64
+    %23 = llvm.load %22 : !llvm.ptr -> f64
+    %24 = llvm.mul %18, %7  : i64
+    %25 = llvm.add %24, %8  : i64
+    %26 = llvm.getelementptr %12[%25] : (!llvm.ptr, i64) -> !llvm.ptr, f64
+    %27 = llvm.load %26 : !llvm.ptr -> f64
+    %28 = llvm.mul %18, %7  : i64
+    %29 = llvm.add %28, %4  : i64
+    %30 = llvm.getelementptr %12[%29] : (!llvm.ptr, i64) -> !llvm.ptr, f64
+    %31 = llvm.load %30 : !llvm.ptr -> f64
+    %32 = llvm.fcmp "olt" %23, %3 : f64
+    %33 = llvm.fcmp "ult" %27, %2 : f64
+    %34 = llvm.fcmp "ugt" %27, %1 : f64
+    llvm.cond_br %32, ^bb3, ^bb8
+  ^bb3:  // pred: ^bb2
+    llvm.cond_br %33, ^bb4, ^bb7
+  ^bb4:  // pred: ^bb3
+    llvm.cond_br %34, ^bb5, ^bb6
+  ^bb5:  // pred: ^bb4
+    llvm.call @printF64(%23) : (f64) -> ()
+    llvm.call @printNewline() : () -> ()
+    llvm.call @printF64(%27) : (f64) -> ()
+    llvm.call @printNewline() : () -> ()
+    llvm.call @printF64(%31) : (f64) -> ()
+    llvm.call @printNewline() : () -> ()
+    llvm.br ^bb7
+  ^bb6:  // pred: ^bb4
+    llvm.br ^bb7
+  ^bb7:  // 3 preds: ^bb3, ^bb5, ^bb6
+    llvm.br ^bb8
+  ^bb8:  // 2 preds: ^bb2, ^bb7
+    llvm.br ^bb9
+  ^bb9:  // pred: ^bb8
+    %35 = llvm.add %18, %8  : i64
+    llvm.br ^bb1(%35 : i64)
+  ^bb10:  // pred: ^bb1
+    llvm.return
+  }
+  llvm.func @loadData_q6(!llvm.ptr, !llvm.ptr, i64, i64, i64, i64, i64, !llvm.ptr, !llvm.ptr, i64, i64, i64) -> i64 attributes {sym_visibility = "private"}
+  llvm.func @printMemrefF64(i64, !llvm.ptr) attributes {sym_visibility = "private"}
+}
+
